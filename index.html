@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Генерація таблиці</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+    }
+
+    td {
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+
+    tr:nth-child(odd) {
+      background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+      background-color: #ffffff;
+    }
+
+    .controls {
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Генерація таблиці з випадковими даними</h1>
+  
+  <div class="controls">
+    <label for="interval">Інтервал (мс):</label>
+    <input type="number" id="interval" value="1000" min="100">
+    <button id="start">Почати</button>
+    <button id="stop" disabled>Зупинити</button>
+  </div>
+
+  <table id="dataTable">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Випадкове число</th>
+        <th>Дата та час</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    let intervalId = null; // ID для setInterval
+    let counter = 1; // Лічильник рядків
+
+    // Отримуємо елементи
+    const intervalInput = document.getElementById('interval');
+    const startButton = document.getElementById('start');
+    const stopButton = document.getElementById('stop');
+    const tableBody = document.getElementById('dataTable').querySelector('tbody');
+
+    // Функція для створення нового рядка
+    function addRow() {
+      const randomValue = Math.floor(Math.random() * 100); // Випадкове число від 0 до 99
+      const currentTime = new Date().toLocaleString(); // Поточний час
+      const row = document.createElement('tr');
+
+      // Додаємо комірки до рядка
+      row.innerHTML = `
+        <td>${counter}</td>
+        <td>${randomValue}</td>
+        <td>${currentTime}</td>
+      `;
+
+      tableBody.appendChild(row); // Додаємо рядок до таблиці
+      counter++; // Збільшуємо лічильник
+    }
+
+    // Запуск генерації рядків
+    startButton.addEventListener('click', () => {
+      const interval = parseInt(intervalInput.value, 10);
+      if (isNaN(interval) || interval <= 0) {
+        alert('Будь ласка, введіть коректний інтервал.');
+        return;
+      }
+
+      startButton.disabled = true;
+      stopButton.disabled = false;
+
+      intervalId = setInterval(addRow, interval);
+    });
+
+    // Зупинка генерації
+    stopButton.addEventListener('click', () => {
+      clearInterval(intervalId);
+      intervalId = null;
+
+      startButton.disabled = false;
+      stopButton.disabled = true;
+    });
+  </script>
+</body>
+</html>
